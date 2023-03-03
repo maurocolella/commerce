@@ -4,12 +4,20 @@ import 'keen-slider/keen-slider.min.css'
 
 import { FC, ReactNode, useEffect } from 'react'
 import type { AppProps } from 'next/app'
+import { SessionProvider } from 'next-auth/react'
 import { Head } from '@components/common'
 import { ManagedUIContext } from '@components/ui/context'
+import { Session } from 'next-auth'
 
 const Noop: FC<{ children?: ReactNode }> = ({ children }) => <>{children}</>
 
-export default function MyApp({ Component, pageProps }: AppProps) {
+type ExtendedProps = AppProps & { session: Session }
+
+export default function MyApp({
+  Component,
+  session,
+  pageProps,
+}: ExtendedProps) {
   const Layout = (Component as any).Layout || Noop
 
   useEffect(() => {
@@ -19,11 +27,13 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head />
-      <ManagedUIContext>
-        <Layout pageProps={pageProps}>
-          <Component {...pageProps} />
-        </Layout>
-      </ManagedUIContext>
+      <SessionProvider session={session}>
+        <ManagedUIContext>
+          <Layout pageProps={pageProps}>
+            <Component {...pageProps} />
+          </Layout>
+        </ManagedUIContext>
+      </SessionProvider>
     </>
   )
 }
