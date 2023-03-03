@@ -38,6 +38,10 @@ export const handler: MutationHook<AddItemHook> = {
       variables.variant_id = item.variantId
     }
 
+    if (variables.variant_id === 'undefined') delete variables.variant_id
+
+    console.log({ variables })
+
     const response = await fetch({
       ...options,
       variables,
