@@ -45,7 +45,7 @@ const Footer: FC<Props> = ({ className, pages }) => {
           <div className="col-span-1 lg:col-span-7">
             <div className="grid md:grid-rows-4 md:grid-cols-3 md:grid-flow-col">
               {[...links, ...sitePages].map((page) => (
-                <span key={page.url} className="py-3 md:py-0 md:pb-4">
+                <span key={page.url} className="py-3 md:pb-4">
                   <Link
                     href={page.url!}
                     className="text-accent-9 hover:text-accent-6 transition ease-in-out duration-150"
@@ -60,13 +60,6 @@ const Footer: FC<Props> = ({ className, pages }) => {
             <div className="flex space-x-4 items-center h-10">
               <ThemeSwitcher />
               <I18nWidget />
-              <a
-                className={s.link}
-                aria-label="Github Repository"
-                href="https://github.com/vercel/commerce"
-              >
-                <Github />
-              </a>
             </div>
           </div>
         </div>
@@ -75,7 +68,7 @@ const Footer: FC<Props> = ({ className, pages }) => {
             <span>&copy; 2020 ACME, Inc. All rights reserved.</span>
           </div>
           <div className="flex items-center text-primary text-sm">
-            <span className="text-primary">Created by</span>
+            <span className="text-primary">Based on a starter project by</span>
             <a
               rel="noopener noreferrer"
               href="https://vercel.com"

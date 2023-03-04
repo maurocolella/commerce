@@ -20,6 +20,8 @@ export default function MyApp({
 }: ExtendedProps) {
   const Layout = (Component as any).Layout || Noop
 
+  console.log({ pageProps })
+
   useEffect(() => {
     document.body.classList?.remove('loading')
   }, [])
