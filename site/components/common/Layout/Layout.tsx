@@ -48,7 +48,7 @@ const Modal = dynamic(() => import('@components/ui/Modal'), {
   ssr: false,
 })
 
-interface Props {
+export interface Props {
   pageProps: {
     pages?: Page[]
     categories: Category[]
@@ -116,23 +116,26 @@ const Layout: React.FC<Props> = ({
 
   return (
     <CommerceProvider locale={locale}>
-      <div className={cn(s.root)}>
-        <Navbar links={[]} />
-        <main className="fit">{children}</main>
-        <Footer pages={pageProps.pages} />
-        <ModalUI />
-        <CheckoutProvider>
-          <SidebarUI links={navBarlinks} />
-        </CheckoutProvider>
-        <FeatureBar
-          title="This site uses cookies to improve your experience. By clicking, you agree to our Privacy Policy."
-          hide={acceptedCookies}
-          action={
-            <Button className="mx-5" onClick={() => onAcceptCookies()}>
-              Accept cookies
-            </Button>
-          }
-        />
+      <div className={cn(s.wrapper)}>
+        <aside className={cn(s.notice)}>Hello world.</aside>
+        <div className={cn(s.root)}>
+          <Navbar links={[]} />
+          <main className="fit">{children}</main>
+          <Footer pages={pageProps.pages} />
+          <ModalUI />
+          <CheckoutProvider>
+            <SidebarUI links={navBarlinks} />
+          </CheckoutProvider>
+          <FeatureBar
+            title="This site uses cookies to improve your experience. By clicking, you agree to our Privacy Policy."
+            hide={acceptedCookies}
+            action={
+              <Button className="mx-5" onClick={() => onAcceptCookies()}>
+                Accept cookies
+              </Button>
+            }
+          />
+        </div>
       </div>
     </CommerceProvider>
   )

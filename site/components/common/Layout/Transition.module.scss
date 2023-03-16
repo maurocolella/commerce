@@ -1,0 +1,11 @@
+.wrapper {
+  transition: 0.3s opacity ease;
+}
+
+.fadeOut {
+  opacity: 0;
+}
+
+.fadeIn {
+  opacity: 1;
+}

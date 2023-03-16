@@ -1,3 +1,19 @@
 .root {
   @apply h-full bg-primary mx-auto transition-colors duration-150;
 }
+
+.wrapper {
+  transition: 0.4s ease transform;
+}
+
+.wrapper:hover {
+  transform: translate3d(0, -100px, 0);
+}
+
+.notice {
+  background-color: lightyellow;
+  cursor: pointer;
+  height: 100px;
+  padding: 30px;
+  position: relative;
+}
