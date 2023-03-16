@@ -1,8 +1,15 @@
 import { useRouter } from 'next/router'
 import { FC, ReactNode, useCallback, useEffect, useState } from 'react'
+import { flushSync } from 'react-dom'
 import Layout, { Props } from './Layout'
 
 import styles from './Transition.module.scss'
+
+declare global {
+  interface Document {
+    startViewTransition: any
+  }
+}
 
 export const TransitionLayout: FC<Props> = ({ children, pageProps }) => {
   const [transitionStage, setTransitionStage] = useState('fadeOut')
@@ -30,14 +37,24 @@ export const TransitionLayout: FC<Props> = ({ children, pageProps }) => {
   useEffect(() => {
     fadeIn()
 
-    router.events.on('routeChangeStart', fadeOut)
-    router.events.on('routeChangeComplete', fadeIn)
-    router.events.on('routeChangeError', fadeIn)
+    router.events.on('routeChangeStart', () => {
+      if (document.startViewTransition) {
+        flushSync(() => {
+          document.startViewTransition(() => fadeIn())
+        })
+      } else fadeOut()
+    })
+    router.events.on('routeChangeComplete', () => {
+      fadeIn()
+    })
+    router.events.on('routeChangeError', () => {
+      fadeIn()
+    })
   }, [fadeIn, fadeOut, router])
 
   return (
     <div>
-      {transitionStage === 'fadeOut' && <>Loading..</>}
+      {transitionStage === 'fadeOut' && <></>}
       <div className={`${styles.wrapper} ${styles[transitionStage]}`}>
         <Layout pageProps={pageProps}>{children}</Layout>
       </div>

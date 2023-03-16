@@ -4,10 +4,11 @@
 
 .wrapper {
   transition: 0.4s ease transform;
+  transform: translate3d(0, -100px, 0);
 }
 
 .wrapper:hover {
-  transform: translate3d(0, -100px, 0);
+  /* transform: translate3d(0, -100px, 0); */
 }
 
 .notice {
