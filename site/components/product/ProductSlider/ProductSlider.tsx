@@ -83,7 +83,12 @@ const ProductSlider: React.FC<ProductSliderProps> = ({
         ref={ref}
         className={cn(s.slider, { [s.show]: isMounted }, 'keen-slider')}
       >
-        {slider && <ProductSliderControl onPrev={onPrev} onNext={onNext} />}
+        {slider && (
+          <ProductSliderControl
+            onPrev={Children.count(children) > 1 ? onPrev : () => void 0}
+            onNext={Children.count(children) > 1 ? onNext : () => void 0}
+          />
+        )}
         {Children.map(children, (child) => {
           // Add the keen-slider__slide className to children
           if (isValidElement(child)) {
