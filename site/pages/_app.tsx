@@ -9,7 +9,7 @@ import { Head } from '@components/common'
 import { ManagedUIContext } from '@components/ui/context'
 import { Session } from 'next-auth'
 
-import './styles.css'
+// import './styles.css'
 
 const Noop: FC<{ children?: ReactNode }> = ({ children }) => <>{children}</>
 

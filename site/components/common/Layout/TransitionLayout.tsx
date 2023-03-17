@@ -1,5 +1,12 @@
 import { useRouter } from 'next/router'
-import { FC, ReactNode, useCallback, useEffect, useState } from 'react'
+import {
+  Dispatch,
+  FC,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
 import { flushSync } from 'react-dom'
 import Layout, { Props } from './Layout'
 
@@ -12,6 +19,10 @@ declare global {
 }
 
 export const TransitionLayout: FC<Props> = ({ children, pageProps }) => {
+  const [mousePos, setMousePos] = useState<{ x: number; y: number }>({
+    x: 0,
+    y: 0,
+  })
   const [transitionStage, setTransitionStage] = useState('fadeOut')
   const router = useRouter()
 
@@ -27,7 +38,7 @@ export const TransitionLayout: FC<Props> = ({ children, pageProps }) => {
   const fadeIn = useCallback(
     (url?: string) => {
       if (router.pathname === url) return
-      window?.scrollTo(0, 0)
+      // window?.scrollTo(0, 0)
       document.body.style.overflow = 'auto'
       setTransitionStage('fadeIn')
     },
@@ -39,18 +50,58 @@ export const TransitionLayout: FC<Props> = ({ children, pageProps }) => {
 
     router.events.on('routeChangeStart', () => {
       if (document.startViewTransition) {
+        const { x, y } = mousePos
+
+        const endRadius = Math.hypot(
+          Math.max(x, window.innerWidth - x),
+          Math.max(y, window.innerHeight - y)
+        )
+
+        let transition: any
+
         flushSync(() => {
-          document.startViewTransition(() => fadeIn())
+          transition = document.startViewTransition(() => fadeIn())
+        })
+
+        transition?.ready.then(() => {
+          // Animate the root's new view
+          document.documentElement.animate(
+            {
+              clipPath: [
+                `circle(0 at ${x}px ${y}px)`,
+                `circle(${endRadius}px at ${x}px ${y}px)`,
+              ],
+            },
+            {
+              duration: 500,
+              easing: 'ease-in',
+              // Specify which pseudo-element to animate
+              pseudoElement: '::view-transition-new(root)',
+            }
+          )
         })
       } else fadeOut()
     })
-    router.events.on('routeChangeComplete', () => {
-      fadeIn()
-    })
-    router.events.on('routeChangeError', () => {
-      fadeIn()
-    })
-  }, [fadeIn, fadeOut, router])
+    router.events.on('routeChangeComplete', fadeIn)
+    router.events.on('routeChangeError', fadeIn)
+  }, [mousePos, fadeIn, fadeOut, router])
+
+  useEffect(() => {
+    const curriedHandler =
+      (handleStateChange: typeof setMousePos) => (event: PointerEvent) => {
+        handleStateChange({
+          x: event.clientX ?? window.innerWidth / 2,
+          y: event.clientY ?? window.innerHeight / 2,
+        })
+      }
+
+    const pointerListener = curriedHandler(setMousePos)
+
+    window.addEventListener('pointerdown', pointerListener)
+    return () => {
+      window.removeEventListener('pointerdown', pointerListener)
+    }
+  }, [setMousePos])
 
   return (
     <div>
