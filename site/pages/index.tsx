@@ -51,6 +51,7 @@ export default function Home({
               height: i === 0 ? 1080 : 540,
               priority: true,
             }}
+            variant="simple"
           />
         ))}
       </Grid>

@@ -23,16 +23,11 @@
 }
 
 ::view-transition-old(root) {
-  /* animation: 500ms cubic-bezier(0.4, 0, 1, 1) both fade-out,
-    500ms cubic-bezier(0.4, 0, 0.2, 1) both slide-to-left; */
-  /* opacity: 1; */
-  animation: none;
+  /* animation: none; */
   mix-blend-mode: normal;
 }
 
 ::view-transition-new(root) {
-  /* animation: 500ms cubic-bezier(0.4, 0, 1, 1) both fade-in,
-    500ms cubic-bezier(0.4, 0, 0.2, 1) both slide-from-right; */
-  animation: none;
+  /* animation: none; */
   mix-blend-mode: normal;
 }
