@@ -5,6 +5,7 @@ import {
   ReactNode,
   useCallback,
   useEffect,
+  useLayoutEffect,
   useState,
 } from 'react'
 import { flushSync } from 'react-dom'
@@ -29,7 +30,7 @@ export const TransitionLayout: FC<Props> = ({ children, pageProps }) => {
   const fadeOut = useCallback(
     (url?: string) => {
       if (router.pathname === url) return
-      document.body.style.overflow = 'hidden'
+      // document.body.style.overflow = 'hidden'
       setTransitionStage('fadeOut')
     },
     [router.pathname]
@@ -39,16 +40,23 @@ export const TransitionLayout: FC<Props> = ({ children, pageProps }) => {
     (url?: string) => {
       if (router.pathname === url) return
       // window?.scrollTo(0, 0)
-      document.body.style.overflow = 'auto'
+      // document.body.style.overflow = 'auto'
       setTransitionStage('fadeIn')
     },
     [router.pathname]
   )
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     fadeIn()
 
+    let transition: any
+
     router.events.on('routeChangeStart', () => {
+      if (document.startViewTransition) {
+        transition = document.startViewTransition(() => fadeIn())
+      } else fadeOut()
+    })
+    router.events.on('routeChangeComplete', () => {
       if (document.startViewTransition) {
         const { x, y } = mousePos
 
@@ -56,12 +64,6 @@ export const TransitionLayout: FC<Props> = ({ children, pageProps }) => {
           Math.max(x, window.innerWidth - x),
           Math.max(y, window.innerHeight - y)
         )
-
-        let transition: any
-
-        flushSync(() => {
-          transition = document.startViewTransition(() => fadeIn())
-        })
 
         transition?.ready.then(() => {
           // Animate the root's new view
@@ -80,9 +82,8 @@ export const TransitionLayout: FC<Props> = ({ children, pageProps }) => {
             }
           )
         })
-      } else fadeOut()
+      } else fadeIn()
     })
-    router.events.on('routeChangeComplete', fadeIn)
     router.events.on('routeChangeError', fadeIn)
   }, [mousePos, fadeIn, fadeOut, router])
 
